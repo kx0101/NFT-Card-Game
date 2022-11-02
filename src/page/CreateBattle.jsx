@@ -1,12 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "../styles";
+import { useGlobalContext } from "../context";
 
-import { PageHOC } from "../components";
+import { PageHOC, CustomButton, CustomInput, GameLoad } from "../components";
 
 const CreateBattle = () => {
+  const { contract, battleName, setBattleName } = useGlobalContext();
+  const [waitBattle, setWaitBattle] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    if (!battleName || !battleName.trim()) return null;
+
+    try {
+      await contract.createBattle(battleName);
+
+      setWaitBattle(true);
+    } catch (error) {}
+  };
+
   return (
-    <div>
-      <h1 className="text-white">Hello from CreateBattle</h1>
-    </div>
+    <>
+      {waitBattle && <GameLoad />}
+      <div className="flex flex-col mb-5">
+        <CustomInput
+          label="Battle"
+          placeholder="Enter battle name"
+          value={battleName}
+          onChange={setBattleName}
+        />
+
+        <CustomButton
+          title="Create Battle"
+          handleClick={handleClick}
+          restStyles="mt-6"
+        />
+
+        <p
+          className={`${styles.infoText} mt-4`}
+          onClick={() => navigate("/join-battle")}
+        >
+          Or join already existing battles
+        </p>
+      </div>
+    </>
   );
 };
 

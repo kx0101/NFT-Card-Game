@@ -1,14 +1,64 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "../context";
+import { useNavigate } from "react-router-dom";
 
-import { PageHOC } from "../components";
+import { PageHOC, CustomInput, CustomButton } from "../components";
 
 const Home = () => {
-  const { demo } = useGlobalContext();
+  const { contract, walletAddress, setShowAlert } = useGlobalContext();
+  const [playerName, setPlayerName] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    try {
+      const playerExists = await contract.isPlayer(walletAddress);
+
+      if (!playerExists) {
+        await contract.registerPlayer(playerName, playerName);
+
+        setShowAlert({
+          status: true,
+          type: "info",
+          msg: `${playerName} is being summoned`,
+        });
+      }
+    } catch (error) {
+      setShowAlert({
+        status: true,
+        type: "failure",
+        msg: "Something went wrong",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const checkForPlayerToken = async () => {
+      const playerExists = await contract.isPlayer(walletAddress);
+      const playerTokenExists = await contract.isPlayer(walletAddress);
+
+      if (playerExists && playerTokenExists) {
+        navigate("/create-battle");
+      }
+    };
+
+    if (contract) checkForPlayerToken();
+  }, [contract]);
 
   return (
-    <div>
-      <h1 className="text-xl text-white">{demo}</h1>
+    <div className="flex flex-col">
+      <CustomInput
+        label="Name"
+        placeholder="Enter your player name"
+        value={playerName}
+        onChange={setPlayerName}
+      />
+
+      <CustomButton
+        title="Register"
+        handleClick={handleClick}
+        restStyles="mt-6"
+      />
     </div>
   );
 };

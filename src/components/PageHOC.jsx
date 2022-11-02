@@ -1,22 +1,26 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { logo, heroImg } from '../assets'
-import styles from '../styles'
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { logo, heroImg } from "../assets";
+import styles from "../styles";
+import { useGlobalContext } from "../context";
+import Alert from "./Alert";
 
 const PageHOC = (Component, title, description) => () => {
-  const navigate = useNavigate()
+  const { showAlert } = useGlobalContext();
+  const navigate = useNavigate();
 
   return (
     <div className={styles.hocContainer}>
+      {showAlert?.status && <Alert type={showAlert.type} msg={showAlert.msg} />}
       <div className={styles.hocContentBox}>
         <img
           src={logo}
-          alt='logo'
+          alt="logo"
           className={styles.hocLogo}
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
         />
         <div className={styles.hocBodyWrapper}>
-          <div className='flex flex-row w-full'>
+          <div className="flex flex-row w-full">
             <h1 className={`flex ${styles.headText} head-text`}>{title}</h1>
           </div>
 
@@ -27,15 +31,15 @@ const PageHOC = (Component, title, description) => () => {
 
         <p className={styles.footerText}>Made by kx0101</p>
       </div>
-      <div className='flex flex-1'>
+      <div className="flex flex-1">
         <img
           src={heroImg}
-          alt='hero-img'
-          className='w-full xl:h-full object-cover'
+          alt="hero-img"
+          className="w-full xl:h-full object-cover"
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PageHOC
+export default PageHOC;
