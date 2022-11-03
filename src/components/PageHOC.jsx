@@ -12,6 +12,7 @@ const PageHOC = (Component, title, description) => () => {
   return (
     <div className={styles.hocContainer}>
       {showAlert?.status && <Alert type={showAlert.type} msg={showAlert.msg} />}
+
       <div className={styles.hocContentBox}>
         <img
           src={logo}
