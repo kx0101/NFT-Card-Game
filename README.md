@@ -8,10 +8,6 @@
 
 <img src="Screenshot_658.png" alt="join_battle" />
 
-## Create a new battle
-
-<img src="Screenshot_657.png" alt="create_battle" />
-
 ## Choose battleground
 
 <img src="Screenshot_662.png" alt="bg" />
