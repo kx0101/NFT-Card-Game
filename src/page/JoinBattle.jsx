@@ -5,8 +5,19 @@ import { CustomButton, PageHOC } from "../components";
 import styles from "../styles";
 
 const JoinBattle = () => {
-  const { contract, gameData, setShowAlert, setBattleName, walletAddress } =
-    useGlobalContext();
+  const {
+    contract,
+    gameData,
+    setShowAlert,
+    setBattleName,
+    walletAddress,
+    setErrorMessage,
+  } = useGlobalContext();
+
+  useEffect(() => {
+    if (gameData?.activeBattle?.battleStatus === 1)
+      navigate(`/battle/${gameData.activeBattle.name}`);
+  }, [gameData]);
 
   const navigate = useNavigate();
 
@@ -14,15 +25,19 @@ const JoinBattle = () => {
     setBattleName(battleName);
 
     try {
-      await contract.joinBattle(battleName);
+      await contract.joinBattle(battleName, {
+        gasLimit: 2000000,
+      });
 
       setShowAlert({
         status: true,
         type: "success",
         msg: `Joining ${battleName}`,
       });
+
+      navigate(`/battle/${battleName}`);
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   };
 
